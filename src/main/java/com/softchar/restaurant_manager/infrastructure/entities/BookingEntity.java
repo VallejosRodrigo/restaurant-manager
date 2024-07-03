@@ -1,5 +1,6 @@
 package com.softchar.restaurant_manager.infrastructure.entities;
 
+import com.softchar.restaurant_manager.domain.model.BookingState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +27,7 @@ public class BookingEntity {
     private TableEntity table;
     private LocalDate reservationDate;
     private LocalTime reservationTime;
-    private String state;
+
+    @Enumerated(EnumType.STRING)
+    private BookingState state = BookingState.PENDING;
 }
