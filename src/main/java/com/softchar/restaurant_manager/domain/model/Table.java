@@ -14,5 +14,4 @@ public class Table {
     private long id;
     private int number;
     private int capacity;
-    private List<Booking> bookings;
 }
