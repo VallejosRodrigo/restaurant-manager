@@ -1,10 +1,10 @@
 package com.softchar.restaurant_manager.domain.port.service;
 
-import com.softchar.restaurant_manager.domain.model.Booking;
-import com.softchar.restaurant_manager.domain.model.dto.ReservationRequestDTO;
+import com.softchar.restaurant_manager.domain.model.dto.BookingDto;
+import com.softchar.restaurant_manager.domain.model.dto.request.BookingRequest;
 
 public interface BookingService {
 
-    boolean save(ReservationRequestDTO reservation);
+    BookingDto save(BookingRequest request);
 
 }

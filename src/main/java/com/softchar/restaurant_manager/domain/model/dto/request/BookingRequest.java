@@ -1,4 +1,4 @@
-package com.softchar.restaurant_manager.domain.model.dto;
+package com.softchar.restaurant_manager.domain.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +12,9 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationRequestDTO {
+public class BookingRequest {
     private Long customerID;
     private Long tableID;
     private LocalDate reservationDate;
     private LocalTime reservationTime;
-
 }
