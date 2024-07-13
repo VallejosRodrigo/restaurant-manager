@@ -14,7 +14,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class BookingDto {
     private Long id;
-    private Long customerID;
+    private Long customerDni;
+    private String customerName;
     private Long tableID;
     private LocalDate reservationDate;
     private LocalTime reservationTime;

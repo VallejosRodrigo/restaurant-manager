@@ -13,7 +13,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingRequest {
-    private Long customerID;
+    private Long customerDni;
+    private String customerName;
     private Long tableID;
     private LocalDate reservationDate;
     private LocalTime reservationTime;

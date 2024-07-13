@@ -9,7 +9,8 @@ import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface BookingRequestMapper {
-    @Mapping(source = "customerID", target = "customerID")
+    @Mapping(source = "customerDni", target = "customerDni")
+    @Mapping(source = "customerName", target = "customerName")
     @Mapping(source = "tableID", target = "table", qualifiedByName = "tableIdToTable")
     @Mapping(source = "reservationTime", target = "reservationTime")
     @Mapping(source = "reservationDate", target = "reservationDate")

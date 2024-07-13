@@ -21,7 +21,8 @@ public class BookingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long customerID;
+    private Long customerDni;
+    private String customerName;
     @ManyToOne
     @JoinColumn(name = "table_id")
     private TableEntity table;

@@ -13,9 +13,10 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class Booking {
     private Long id;
-    private Long customerID;
+    private Long customerDni;
+    private String customerName;
+    private Table table;
     private LocalDate reservationDate;
     private LocalTime reservationTime;
-    private Table table;
     private String state;
 }

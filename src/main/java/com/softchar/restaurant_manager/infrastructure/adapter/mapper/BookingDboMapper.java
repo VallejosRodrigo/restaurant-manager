@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface BookingDboMapper {
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "customerID", target = "customerID")
+    @Mapping(source = "customerDni", target = "customerDni")
     @Mapping(source = "table", target = "table")
     @Mapping(source = "reservationTime", target = "reservationTime")
     @Mapping(source = "reservationDate", target = "reservationDate")
