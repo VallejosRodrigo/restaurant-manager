@@ -10,6 +10,8 @@ import com.softchar.restaurant_manager.infrastructure.adapter.mapper.TableDboMap
 import com.softchar.restaurant_manager.infrastructure.adapter.repository.BookingJpaRepository;
 import com.softchar.restaurant_manager.infrastructure.adapter.repository.TableJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -36,11 +38,6 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
     }
 
     @Override
-    public Booking findById(Long id) {
-        return null;
-    }
-
-    @Override
     public Booking save(Booking booking) {
 
         TableEntity tableEntity = jpaTableRepository.findById(booking.getTable().getId())
@@ -59,5 +56,20 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
             throw new IllegalStateException("Table with ID " + booking.getTable().getId()   + " is already booked for the specified date and time");
         }
     }
+
+    @Override
+    public Booking findById(Long id) {
+       BookingEntity bookingEntity = jpaBookingRepository.findById(id).orElseThrow(
+               NullPointerException::new
+       );
+        return bookingDboMapper.toDomain(bookingEntity);
+    }
+
+    @Override
+    public Page<Booking> findAll(Pageable pageable) {
+        Page<BookingEntity> bookingEntities = jpaBookingRepository.findAll(pageable);
+        return bookingEntities.map(bookingDboMapper::toDomain);
+    }
+
 
 }

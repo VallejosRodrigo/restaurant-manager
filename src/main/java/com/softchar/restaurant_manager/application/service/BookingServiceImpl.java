@@ -7,8 +7,9 @@ import com.softchar.restaurant_manager.domain.model.dto.BookingDto;
 import com.softchar.restaurant_manager.domain.model.dto.request.BookingRequest;
 import com.softchar.restaurant_manager.domain.port.repository.BookingRepositoryPort;
 import com.softchar.restaurant_manager.domain.port.service.BookingService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,4 +38,21 @@ public class BookingServiceImpl implements BookingService {
 
         return bookingDtoMapper.toDto(savedBooking);
     }
+
+    @Override
+    public BookingDto findById(Long id){
+        if(id != null){
+            Booking bookingToFindById = bookingRepositoryPort.findById(id);
+            return bookingDtoMapper.toDto(bookingToFindById);
+        }
+        else throw new NullPointerException();
+
+    }
+
+    @Override
+    public Page<BookingDto> findAllBookings(Pageable pageable) {
+        Page<Booking> bookings = bookingRepositoryPort.findAll(pageable);
+        return bookings.map(bookingDtoMapper::toDto);
+    }
+
 }
