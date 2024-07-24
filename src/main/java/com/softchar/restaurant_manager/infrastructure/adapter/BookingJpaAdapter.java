@@ -66,6 +66,14 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
     }
 
     @Override
+    public void deleteById(Long id) {
+        jpaBookingRepository.findById(id).orElseThrow(
+                NullPointerException::new
+        );
+        jpaBookingRepository.deleteById(id);
+    }
+
+    @Override
     public Page<Booking> findAll(Pageable pageable) {
         Page<BookingEntity> bookingEntities = jpaBookingRepository.findAll(pageable);
         return bookingEntities.map(bookingDboMapper::toDomain);

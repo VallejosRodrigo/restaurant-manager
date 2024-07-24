@@ -4,6 +4,7 @@ import com.softchar.restaurant_manager.application.mapper.BookingDtoMapper;
 import com.softchar.restaurant_manager.application.mapper.BookingRequestMapper;
 import com.softchar.restaurant_manager.domain.model.Booking;
 import com.softchar.restaurant_manager.domain.model.dto.BookingDto;
+import com.softchar.restaurant_manager.domain.model.dto.delete.BookingDelete;
 import com.softchar.restaurant_manager.domain.model.dto.request.BookingRequest;
 import com.softchar.restaurant_manager.domain.port.repository.BookingRepositoryPort;
 import com.softchar.restaurant_manager.domain.port.service.BookingService;
@@ -47,6 +48,12 @@ public class BookingServiceImpl implements BookingService {
         }
         else throw new NullPointerException();
 
+    }
+
+    @Override
+    public BookingDelete deleteById(Long id) {
+        bookingRepositoryPort.deleteById(id);
+        return new BookingDelete("Booking with id "+ id +" has been deleted successfully");
     }
 
     @Override

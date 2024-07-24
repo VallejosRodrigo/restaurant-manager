@@ -9,6 +9,7 @@ public interface BookingRepositoryPort {
 
     Booking save(Booking request);
     Booking findById(Long id);
+    void deleteById(Long id);
     Page<Booking> findAll(Pageable pageable);
 
 }

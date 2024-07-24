@@ -1,6 +1,7 @@
 package com.softchar.restaurant_manager.infrastructure.rest.controller;
 
 import com.softchar.restaurant_manager.domain.model.dto.BookingDto;
+import com.softchar.restaurant_manager.domain.model.dto.delete.BookingDelete;
 import com.softchar.restaurant_manager.domain.model.dto.request.BookingRequest;
 import com.softchar.restaurant_manager.domain.port.service.BookingService;
 import com.softchar.restaurant_manager.domain.port.service.TableService;
@@ -41,6 +42,14 @@ public class BookingController {
     }
 
     @RequestMapping(
+            method = RequestMethod.DELETE,
+            path = "delete/{id}"
+    )
+    public ResponseEntity<BookingDelete> deleteBookingById(@PathVariable Long id){
+        return new ResponseEntity<>(bookingService.deleteById(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(
             method = RequestMethod.GET,
             path = "/"
     )
@@ -53,6 +62,8 @@ public class BookingController {
         Page<BookingDto> bookingDtoPage = bookingService.findAllBookings(pageable);
         return new ResponseEntity<>(bookingDtoPage ,HttpStatus.OK);
     }
+
+
 
 
 }
