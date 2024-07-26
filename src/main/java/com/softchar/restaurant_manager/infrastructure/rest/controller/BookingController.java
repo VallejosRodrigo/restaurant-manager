@@ -34,6 +34,14 @@ public class BookingController {
     }
 
     @RequestMapping(
+            method = RequestMethod.PUT,
+            path = "/update/{id}"
+    )
+    public ResponseEntity<BookingDto> updateBookingById(@PathVariable Long id, @RequestBody BookingRequest request){
+        return new ResponseEntity<>(bookingService.updateById(id, request), HttpStatus.OK);
+    }
+
+    @RequestMapping(
             method = RequestMethod.GET,
             path = "/get/{id}"
     )
@@ -62,8 +70,6 @@ public class BookingController {
         Page<BookingDto> bookingDtoPage = bookingService.findAllBookings(pageable);
         return new ResponseEntity<>(bookingDtoPage ,HttpStatus.OK);
     }
-
-
 
 
 }

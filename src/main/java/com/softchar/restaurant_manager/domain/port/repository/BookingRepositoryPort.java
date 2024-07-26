@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 public interface BookingRepositoryPort {
 
     Booking save(Booking request);
+    Booking updateById(Long id, Booking request);
     Booking findById(Long id);
     void deleteById(Long id);
     Page<Booking> findAll(Pageable pageable);

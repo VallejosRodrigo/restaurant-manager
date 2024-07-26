@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
+
 @Service
 public class BookingServiceImpl implements BookingService {
 
@@ -38,6 +40,14 @@ public class BookingServiceImpl implements BookingService {
         Booking savedBooking = bookingRepositoryPort.save(bookingToSave);
 
         return bookingDtoMapper.toDto(savedBooking);
+    }
+
+    @Override
+    public BookingDto updateById(Long id, BookingRequest request) {
+        Booking bookingToUpdateById = bookingRequestMapper.toDomain(request);
+        Booking bookingUpdated = bookingRepositoryPort.updateById(id, bookingToUpdateById);
+
+        return bookingDtoMapper.toDto(bookingUpdated);
     }
 
     @Override

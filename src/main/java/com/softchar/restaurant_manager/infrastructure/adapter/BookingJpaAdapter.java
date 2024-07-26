@@ -1,7 +1,6 @@
 package com.softchar.restaurant_manager.infrastructure.adapter;
 
 import com.softchar.restaurant_manager.domain.model.Booking;
-import com.softchar.restaurant_manager.domain.model.Table;
 import com.softchar.restaurant_manager.domain.port.repository.BookingRepositoryPort;
 import com.softchar.restaurant_manager.infrastructure.adapter.entity.BookingEntity;
 import com.softchar.restaurant_manager.infrastructure.adapter.entity.TableEntity;
@@ -13,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class BookingJpaAdapter implements BookingRepositoryPort {
@@ -38,23 +35,35 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
     }
 
     @Override
-    public Booking save(Booking booking) {
+    public Booking save(Booking request) {
+        TableEntity tableEntity = checkTableAvailability(request);
 
-        TableEntity tableEntity = jpaTableRepository.findById(booking.getTable().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Table with ID " + booking.getTable().getId() + " not found"));
-
-
-        boolean tableOccupied = jpaBookingRepository.existsByTableAndReservationDateAndReservationTime(
-                tableEntity, booking.getReservationDate(), booking.getReservationTime());
-
-        if (!tableOccupied) {
-            BookingEntity newBooking = bookingDboMapper.toDbo(booking);
+        if (checkDateAndTime(request, tableEntity)) {
+            BookingEntity newBooking = bookingDboMapper.toDbo(request);
             BookingEntity bookingSaved = jpaBookingRepository.save(newBooking);
             return bookingDboMapper.toDomain(bookingSaved);
-        } else {
-            // Manejar el caso cuando la mesa está ocupada para la fecha y hora especificadas
-            throw new IllegalStateException("Table with ID " + booking.getTable().getId()   + " is already booked for the specified date and time");
         }
+        else throw new IllegalStateException("Table with ID " + request.getTable().getId() + " is already booked for the specified date and time");
+    }
+
+    @Override
+    public Booking updateById(Long id, Booking request) {
+        BookingEntity existingBookingEntity = jpaBookingRepository.findById(id).orElseThrow(
+                NullPointerException::new
+        );
+        TableEntity existingTableEntity = checkTableAvailability(request);
+
+        if(checkDateAndTime(request, existingTableEntity)) {
+            existingBookingEntity.setCustomerDni(request.getCustomerDni());
+            existingBookingEntity.setCustomerName(request.getCustomerName());
+            existingBookingEntity.setTable(existingTableEntity);
+            existingBookingEntity.setReservationDate(request.getReservationDate());
+            existingBookingEntity.setReservationTime(request.getReservationTime());
+
+            BookingEntity bookingUpdated = jpaBookingRepository.save(existingBookingEntity);
+            return bookingDboMapper.toDomain(bookingUpdated);
+        }
+        else throw new IllegalStateException("Table with ID " + request.getTable().getId() + " is already booked for the specified date and time");
     }
 
     @Override
@@ -79,5 +88,15 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
         return bookingEntities.map(bookingDboMapper::toDomain);
     }
 
+
+    private TableEntity checkTableAvailability(Booking booking){
+        return jpaTableRepository.findById(booking.getTable().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Table with ID " + booking.getTable().getId() + " not found"));
+    }
+
+    private boolean checkDateAndTime(Booking booking, TableEntity table){
+        return !jpaBookingRepository.existsByTableAndReservationDateAndReservationTime(
+                table, booking.getReservationDate(), booking.getReservationTime());
+    }
 
 }

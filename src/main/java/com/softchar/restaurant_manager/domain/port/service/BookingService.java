@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 public interface BookingService {
 
     BookingDto save(BookingRequest request);
+    BookingDto updateById(Long id, BookingRequest request);
     BookingDto findById(Long id);
     BookingDelete deleteById(Long id);
     Page<BookingDto> findAllBookings(Pageable pageable);
-
 
 }
