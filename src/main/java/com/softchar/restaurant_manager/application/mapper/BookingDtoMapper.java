@@ -7,19 +7,33 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Mapper(componentModel = "spring")
 public interface BookingDtoMapper {
 
     @Mapping(source = "customerDni", target = "customerDni")
-    @Mapping(source = "customerName", target = "customerName")
+    @Mapping(source = "customerName", target = "customerName", qualifiedByName = "toUppercase")
     @Mapping(source = "table", target = "tableID", qualifiedByName = "tableToTableId")
     @Mapping(source = "reservationTime", target = "reservationTime")
     @Mapping(source = "reservationDate", target = "reservationDate")
     @Mapping(source = "state", target = "state")
     BookingDto toDto(Booking domain);
 
+    default List<BookingDto> toDto(List<Booking> domains) {
+        return domains.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     @Named("tableToTableId")
     default Long tableToTableId(Table table) {
         return table.getId();
+    }
+
+    @Named("toUppercase")
+    default String toUppercase(String input) {
+        return input != null ? input.toUpperCase() : null;
     }
 }

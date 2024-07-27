@@ -10,7 +10,7 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface BookingRequestMapper {
     @Mapping(source = "customerDni", target = "customerDni")
-    @Mapping(source = "customerName", target = "customerName")
+    @Mapping(source = "customerName", target = "customerName", qualifiedByName = "toUppercase")
     @Mapping(source = "tableID", target = "table", qualifiedByName = "tableIdToTable")
     @Mapping(source = "reservationTime", target = "reservationTime")
     @Mapping(source = "reservationDate", target = "reservationDate")
@@ -20,6 +20,11 @@ public interface BookingRequestMapper {
     default Table tableIdToTable(Long tableId) {
         //Implementar la busqueda de la mesa
         return new Table(tableId, 0, 0);
+    }
+
+    @Named("toUppercase")
+    default String toUppercase(String input) {
+        return input != null ? input.toUpperCase() : null;
     }
 
 }

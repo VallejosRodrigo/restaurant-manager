@@ -13,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class BookingJpaAdapter implements BookingRepositoryPort {
 
@@ -36,9 +39,7 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
 
     @Override
     public Booking save(Booking request) {
-        TableEntity tableEntity = checkTableAvailability(request);
-
-        if (checkDateAndTime(request, tableEntity)) {
+        if (checkDateAndTime(request, checkTableAvailability(request))) {
             BookingEntity newBooking = bookingDboMapper.toDbo(request);
             BookingEntity bookingSaved = jpaBookingRepository.save(newBooking);
             return bookingDboMapper.toDomain(bookingSaved);
@@ -51,12 +52,10 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
         BookingEntity existingBookingEntity = jpaBookingRepository.findById(id).orElseThrow(
                 NullPointerException::new
         );
-        TableEntity existingTableEntity = checkTableAvailability(request);
-
-        if(checkDateAndTime(request, existingTableEntity)) {
+        if(checkDateAndTime(request, checkTableAvailability(request))) {
             existingBookingEntity.setCustomerDni(request.getCustomerDni());
             existingBookingEntity.setCustomerName(request.getCustomerName());
-            existingBookingEntity.setTable(existingTableEntity);
+            existingBookingEntity.setTable(checkTableAvailability(request));
             existingBookingEntity.setReservationDate(request.getReservationDate());
             existingBookingEntity.setReservationTime(request.getReservationTime());
 
@@ -80,6 +79,17 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
                 NullPointerException::new
         );
         jpaBookingRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Booking> findAllByName(String name) {
+        List<BookingEntity> bookingEntities = jpaBookingRepository.findAllByCustomerNameContaining(name);
+        if(bookingEntities.isEmpty())
+            throw new NullPointerException();
+
+        return bookingEntities.stream()
+                .map(bookingDboMapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override

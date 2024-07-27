@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/booking")
 public class BookingController {
@@ -51,10 +53,20 @@ public class BookingController {
 
     @RequestMapping(
             method = RequestMethod.DELETE,
-            path = "delete/{id}"
+            path = "/delete/{id}"
     )
     public ResponseEntity<BookingDelete> deleteBookingById(@PathVariable Long id){
         return new ResponseEntity<>(bookingService.deleteById(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            path = "/{name}"
+    )
+    public ResponseEntity<List<BookingDto>> findAllBookingByNameContaining(@PathVariable String name){
+
+        List<BookingDto> bookingDtoList = bookingService.findAllByName(name.toUpperCase());
+        return new ResponseEntity<>(bookingDtoList, HttpStatus.OK);
     }
 
     @RequestMapping(

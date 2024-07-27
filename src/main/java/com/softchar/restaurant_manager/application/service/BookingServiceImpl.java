@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Book;
+import java.util.List;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -64,6 +64,15 @@ public class BookingServiceImpl implements BookingService {
     public BookingDelete deleteById(Long id) {
         bookingRepositoryPort.deleteById(id);
         return new BookingDelete("Booking with id "+ id +" has been deleted successfully");
+    }
+
+    @Override
+    public List<BookingDto> findAllByName(String name) {
+        if(name != null) {
+            List<Booking> bookingToFindByName = bookingRepositoryPort.findAllByName(name);
+            return bookingDtoMapper.toDto(bookingToFindByName);
+        }
+        else throw new NullPointerException();
     }
 
     @Override
