@@ -21,12 +21,6 @@ public interface BookingDtoMapper {
     @Mapping(source = "state", target = "state")
     BookingDto toDto(Booking domain);
 
-    default List<BookingDto> toDto(List<Booking> domains) {
-        return domains.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
-
     @Named("tableToTableId")
     default Long tableToTableId(Table table) {
         return table.getId();

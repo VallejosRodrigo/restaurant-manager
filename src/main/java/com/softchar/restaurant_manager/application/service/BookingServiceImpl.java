@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -70,7 +71,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> findAllByName(String name) {
         if(name != null) {
             List<Booking> bookingToFindByName = bookingRepositoryPort.findAllByName(name);
-            return bookingDtoMapper.toDto(bookingToFindByName);
+            return bookingToFindByName.stream()
+                    .map(bookingDtoMapper::toDto)
+                    .collect(Collectors.toList());
         }
         else throw new NullPointerException();
     }
