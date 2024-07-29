@@ -8,6 +8,8 @@ import com.softchar.restaurant_manager.domain.model.dto.delete.BookingDelete;
 import com.softchar.restaurant_manager.domain.model.dto.request.BookingRequest;
 import com.softchar.restaurant_manager.domain.port.repository.BookingRepositoryPort;
 import com.softchar.restaurant_manager.domain.port.service.BookingService;
+import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.IdCannotBeNullException;
+import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.NameCannotBeNullException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,10 +47,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto updateById(Long id, BookingRequest request) {
-        Booking bookingToUpdateById = bookingRequestMapper.toDomain(request);
-        Booking bookingUpdated = bookingRepositoryPort.updateById(id, bookingToUpdateById);
-
-        return bookingDtoMapper.toDto(bookingUpdated);
+        if(id != null) {
+            Booking bookingToUpdateById = bookingRequestMapper.toDomain(request);
+            Booking bookingUpdated = bookingRepositoryPort.updateById(id, bookingToUpdateById);
+            return bookingDtoMapper.toDto(bookingUpdated);
+        }
+        else throw new IdCannotBeNullException("ID cannot be null");
     }
 
     @Override
@@ -57,14 +61,17 @@ public class BookingServiceImpl implements BookingService {
             Booking bookingToFindById = bookingRepositoryPort.findById(id);
             return bookingDtoMapper.toDto(bookingToFindById);
         }
-        else throw new NullPointerException();
+        else throw new IdCannotBeNullException("ID cannot be null");
 
     }
 
     @Override
     public BookingDelete deleteById(Long id) {
-        bookingRepositoryPort.deleteById(id);
-        return new BookingDelete("Booking with id "+ id +" has been deleted successfully");
+        if(id != null) {
+            bookingRepositoryPort.deleteById(id);
+            return new BookingDelete("Booking with id " + id + " has been deleted successfully");
+        }
+        else throw new IdCannotBeNullException("ID cannot be null");
     }
 
     @Override
@@ -75,11 +82,13 @@ public class BookingServiceImpl implements BookingService {
                     .map(bookingDtoMapper::toDto)
                     .collect(Collectors.toList());
         }
-        else throw new NullPointerException();
+        else throw new IdCannotBeNullException("customerName cannot be null");
     }
 
     @Override
     public Page<BookingDto> findAllBookings(Pageable pageable) {
+
+
         Page<Booking> bookings = bookingRepositoryPort.findAll(pageable);
         return bookings.map(bookingDtoMapper::toDto);
     }

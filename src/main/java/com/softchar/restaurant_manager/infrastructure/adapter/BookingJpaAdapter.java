@@ -8,6 +8,10 @@ import com.softchar.restaurant_manager.infrastructure.adapter.mapper.BookingDboM
 import com.softchar.restaurant_manager.infrastructure.adapter.mapper.TableDboMapper;
 import com.softchar.restaurant_manager.infrastructure.adapter.repository.BookingJpaRepository;
 import com.softchar.restaurant_manager.infrastructure.adapter.repository.TableJpaRepository;
+import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.MethodArgumentNotValidException;
+import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.NameCannotBeNullException;
+import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.ResourceNotFoundException;
+import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.TableAlreadyBookedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,13 +48,13 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
             BookingEntity bookingSaved = jpaBookingRepository.save(newBooking);
             return bookingDboMapper.toDomain(bookingSaved);
         }
-        else throw new IllegalStateException("Table with ID " + request.getTable().getId() + " is already booked for the specified date and time");
+        else throw new TableAlreadyBookedException("Table with ID " + request.getTable().getId() + " is already booked for the specified date and time");
     }
 
     @Override
     public Booking updateById(Long id, Booking request) {
         BookingEntity existingBookingEntity = jpaBookingRepository.findById(id).orElseThrow(
-                NullPointerException::new
+                () -> new ResourceNotFoundException("Booking not found whit ID: " + id)
         );
         if(checkDateAndTime(request, checkTableAvailability(request))) {
             existingBookingEntity.setCustomerDni(request.getCustomerDni());
@@ -62,13 +66,13 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
             BookingEntity bookingUpdated = jpaBookingRepository.save(existingBookingEntity);
             return bookingDboMapper.toDomain(bookingUpdated);
         }
-        else throw new IllegalStateException("Table with ID " + request.getTable().getId() + " is already booked for the specified date and time");
+        else throw new TableAlreadyBookedException("Table with ID " + request.getTable().getId() + " is already booked for the specified date and time");
     }
 
     @Override
     public Booking findById(Long id) {
        BookingEntity bookingEntity = jpaBookingRepository.findById(id).orElseThrow(
-               NullPointerException::new
+               () -> new ResourceNotFoundException("Booking not found whit ID: " + id)
        );
         return bookingDboMapper.toDomain(bookingEntity);
     }
@@ -76,7 +80,7 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
     @Override
     public void deleteById(Long id) {
         jpaBookingRepository.findById(id).orElseThrow(
-                NullPointerException::new
+                () -> new ResourceNotFoundException("Booking not found whit ID: " + id)
         );
         jpaBookingRepository.deleteById(id);
     }
@@ -85,7 +89,7 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
     public List<Booking> findAllByName(String name) {
         List<BookingEntity> bookingEntities = jpaBookingRepository.findAllByCustomerNameContaining(name);
         if(bookingEntities.isEmpty())
-            throw new NullPointerException();
+            throw new NameCannotBeNullException("Booking not found whit customerName: " + name);
 
         return bookingEntities.stream()
                 .map(bookingDboMapper::toDomain)
@@ -101,7 +105,7 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
 
     private TableEntity checkTableAvailability(Booking booking){
         return jpaTableRepository.findById(booking.getTable().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Table with ID " + booking.getTable().getId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Table with ID " + booking.getTable().getId() + " not found"));
     }
 
     private boolean checkDateAndTime(Booking booking, TableEntity table){
