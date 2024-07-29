@@ -1,4 +1,4 @@
-package com.softchar.restaurant_manager.infrastructure.entities;
+package com.softchar.restaurant_manager.infrastructure.adapter.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

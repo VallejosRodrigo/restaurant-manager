@@ -1,5 +1,6 @@
-package com.softchar.restaurant_manager.infrastructure.entities;
+package com.softchar.restaurant_manager.infrastructure.adapter.entity;
 
+import com.softchar.restaurant_manager.domain.model.BookingState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,11 +21,14 @@ public class BookingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long customerID;
+    private Long customerDni;
+    private String customerName;
     @ManyToOne
     @JoinColumn(name = "table_id")
     private TableEntity table;
     private LocalDate reservationDate;
     private LocalTime reservationTime;
-    private String state;
+
+    @Enumerated(EnumType.STRING)
+    private BookingState state = BookingState.PENDING;
 }

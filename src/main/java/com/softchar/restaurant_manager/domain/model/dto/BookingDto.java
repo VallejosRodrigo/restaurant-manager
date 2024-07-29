@@ -12,10 +12,12 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationRequestDTO {
-    private Long customerID;
+public class BookingDto {
+    private Long id;
+    private Long customerDni;
+    private String customerName;
     private Long tableID;
     private LocalDate reservationDate;
     private LocalTime reservationTime;
-
+    private String state;
 }
