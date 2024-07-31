@@ -9,8 +9,9 @@ import com.softchar.restaurant_manager.domain.model.dto.request.BookingRequest;
 import com.softchar.restaurant_manager.domain.port.repository.BookingRepositoryPort;
 import com.softchar.restaurant_manager.domain.port.service.BookingService;
 import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.IdCannotBeNullException;
-import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.NameCannotBeNullException;
+import com.softchar.restaurant_manager.infrastructure.sahre.config.CaffeineCacheConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,7 @@ public class BookingServiceImpl implements BookingService {
         else throw new IdCannotBeNullException("ID cannot be null");
     }
 
+    @Cacheable(value = CaffeineCacheConfig.BOOKING_CACHE, key = "'findById_' + #id", unless = "#result == null")
     @Override
     public BookingDto findById(Long id){
         if(id != null){
@@ -74,6 +76,7 @@ public class BookingServiceImpl implements BookingService {
         else throw new IdCannotBeNullException("ID cannot be null");
     }
 
+    @Cacheable(value = CaffeineCacheConfig.BOOKING_CACHE, key = "'findAllByName_' + #name", unless = "#result == null || #result.isEmpty()")
     @Override
     public List<BookingDto> findAllByName(String name) {
         if(name != null) {
@@ -85,6 +88,7 @@ public class BookingServiceImpl implements BookingService {
         else throw new IdCannotBeNullException("customerName cannot be null");
     }
 
+    @Cacheable(value = CaffeineCacheConfig.BOOKING_CACHE, key = "'findAllBookings_' + #pageable.pageNumber + '_' + #pageable.pageSize", unless = "#result == null || !#result.hasContent()")
     @Override
     public Page<BookingDto> findAllBookings(Pageable pageable) {
 
