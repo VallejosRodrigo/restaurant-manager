@@ -1,4 +1,4 @@
-package com.softchar.restaurant_manager.infrastructure.sahre.config;
+package com.softchar.restaurant_manager.infrastructure.sahre.config.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,17 +25,17 @@ public class CaffeineCacheConfig {
     public static final String BOOKING_CACHE = "BOOKING_CACHE";
 
     public CacheManager cacheManager(){
-
         List<CaffeineCache> caches = new ArrayList<>();
-        caches.add(buildCache(BOOKING_CACHE, cacheBookingTtl, TimeUnit.SECONDS, cacheBookingMaxSize));
+        caches.add(buildCache(cacheBookingTtl, cacheBookingMaxSize));
         SimpleCacheManager manager = new SimpleCacheManager();
         manager.setCaches(caches);
+
         return manager;
     }
 
-    private static CaffeineCache buildCache(String name, Long ttl, TimeUnit ttlUnit, long size){
-        return new CaffeineCache(name, Caffeine.newBuilder()
-                .expireAfterWrite(ttl, ttlUnit)
+    private static CaffeineCache buildCache(Long ttl, long size){
+        return new CaffeineCache(CaffeineCacheConfig.BOOKING_CACHE, Caffeine.newBuilder()
+                .expireAfterWrite(ttl, TimeUnit.SECONDS)
                 .maximumSize(size)
                 .build());
     }

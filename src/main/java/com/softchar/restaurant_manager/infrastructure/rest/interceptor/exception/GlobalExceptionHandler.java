@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     MessageException handleException(HttpServletRequest request){
         return MessageException.builder()
-                .message("Server error! :(")
+                .message("Server error! T_T ")
                 .uri(request.getRequestURI())
                 .build();
     }

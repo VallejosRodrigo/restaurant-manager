@@ -17,4 +17,6 @@ public interface BookingService {
     List<BookingDto> findAllByName(String name);
     Page<BookingDto> findAllBookings(Pageable pageable);
 
+    void validateFieldsGetAllBooking(int page, int size, String sortBy);
+
 }
