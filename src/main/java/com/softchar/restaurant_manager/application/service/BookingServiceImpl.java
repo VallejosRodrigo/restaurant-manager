@@ -9,13 +9,15 @@ import com.softchar.restaurant_manager.domain.model.dto.request.BookingRequest;
 import com.softchar.restaurant_manager.domain.port.repository.BookingRepositoryPort;
 import com.softchar.restaurant_manager.domain.port.service.BookingService;
 import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.IdCannotBeNullException;
-import com.softchar.restaurant_manager.infrastructure.sahre.config.CaffeineCacheConfig;
+import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.MethodArgumentNotValidException;
+import com.softchar.restaurant_manager.infrastructure.sahre.config.cache.CaffeineCacheConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,6 +97,21 @@ public class BookingServiceImpl implements BookingService {
 
         Page<Booking> bookings = bookingRepositoryPort.findAll(pageable);
         return bookings.map(bookingDtoMapper::toDto);
+    }
+
+
+    public void validateFieldsGetAllBooking(int page,
+                                             int size,
+                                             String sortBy){
+        List<String> validSortByFields = Arrays.asList(
+                "id", "customerDni", "customerName", "tableID",
+                "reservationDate", "reservationTime", "state");
+        if (page < 0)
+            throw new MethodArgumentNotValidException("Value of the 'page' parameter must not be less than 0");
+        if(size <= 0)
+            throw new MethodArgumentNotValidException("Value of the 'size' parameter must be greater than 0");
+        if(!validSortByFields.contains(sortBy))
+            throw new MethodArgumentNotValidException("You must enter a value in 'sortBy' that is compatible with some field");
     }
 
 }
