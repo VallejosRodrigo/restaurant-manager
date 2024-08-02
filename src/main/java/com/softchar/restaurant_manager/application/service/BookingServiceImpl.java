@@ -55,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
             Booking bookingUpdated = bookingRepositoryPort.updateById(id, bookingToUpdateById);
             return bookingDtoMapper.toDto(bookingUpdated);
         }
-        else throw new IdCannotBeNullException("ID cannot be null");
+        else throw new IdCannotBeNullException(IdCannotBeNullException.MESSAGE_ID_NOT_NULL);
     }
 
     @Cacheable(value = CaffeineCacheConfig.BOOKING_CACHE, key = "'findById_' + #id", unless = "#result == null")
@@ -65,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
             Booking bookingToFindById = bookingRepositoryPort.findById(id);
             return bookingDtoMapper.toDto(bookingToFindById);
         }
-        else throw new IdCannotBeNullException("ID cannot be null");
+        else throw new IdCannotBeNullException(IdCannotBeNullException.MESSAGE_ID_NOT_NULL);
 
     }
 
@@ -75,7 +75,7 @@ public class BookingServiceImpl implements BookingService {
             bookingRepositoryPort.deleteById(id);
             return new BookingDelete("Booking with id " + id + " has been deleted successfully");
         }
-        else throw new IdCannotBeNullException("ID cannot be null");
+        else throw new IdCannotBeNullException(IdCannotBeNullException.MESSAGE_ID_NOT_NULL);
     }
 
     @Cacheable(value = CaffeineCacheConfig.BOOKING_CACHE, key = "'findAllByName_' + #name", unless = "#result == null || #result.isEmpty()")
@@ -87,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
                     .map(bookingDtoMapper::toDto)
                     .collect(Collectors.toList());
         }
-        else throw new IdCannotBeNullException("customerName cannot be null");
+        else throw new IdCannotBeNullException(IdCannotBeNullException.MESSAGE_NAME_NOT_NULL);
     }
 
     @Cacheable(value = CaffeineCacheConfig.BOOKING_CACHE, key = "'findAllBookings_' + #pageable.pageNumber + '_' + #pageable.pageSize", unless = "#result == null || !#result.hasContent()")

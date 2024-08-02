@@ -4,7 +4,6 @@ import com.softchar.restaurant_manager.domain.model.dto.BookingDto;
 import com.softchar.restaurant_manager.domain.model.dto.delete.BookingDelete;
 import com.softchar.restaurant_manager.domain.model.dto.request.BookingRequest;
 import com.softchar.restaurant_manager.domain.port.service.BookingService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,23 +31,23 @@ public class BookingController implements BookingControllerApi {
     }
 
     @Override
-    public ResponseEntity<BookingDto> updateBookingById(@NotNull Long id,
+    public ResponseEntity<BookingDto> updateBookingById(Long id,
                                                         BookingRequest request){
         return new ResponseEntity<>(bookingService.updateById(id, request), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<BookingDto> findBookingById(@NotNull Long id){
+    public ResponseEntity<BookingDto> findBookingById(Long id){
         return new ResponseEntity<>(bookingService.findById(id),HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<BookingDelete> deleteBookingById(@NotNull Long id){
+    public ResponseEntity<BookingDelete> deleteBookingById(Long id){
         return new ResponseEntity<>(bookingService.deleteById(id), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<List<BookingDto>> findAllBookingByNameContaining(@NotNull String customerName){
+    public ResponseEntity<List<BookingDto>> findAllBookingByNameContaining(String customerName){
         List<BookingDto> bookingDtoList = bookingService.findAllByName(customerName.toUpperCase());
         return new ResponseEntity<>(bookingDtoList, HttpStatus.OK);
     }

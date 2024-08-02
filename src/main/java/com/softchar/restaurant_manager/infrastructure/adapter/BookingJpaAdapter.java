@@ -5,10 +5,8 @@ import com.softchar.restaurant_manager.domain.port.repository.BookingRepositoryP
 import com.softchar.restaurant_manager.infrastructure.adapter.entity.BookingEntity;
 import com.softchar.restaurant_manager.infrastructure.adapter.entity.TableEntity;
 import com.softchar.restaurant_manager.infrastructure.adapter.mapper.BookingDboMapper;
-import com.softchar.restaurant_manager.infrastructure.adapter.mapper.TableDboMapper;
 import com.softchar.restaurant_manager.infrastructure.adapter.repository.BookingJpaRepository;
 import com.softchar.restaurant_manager.infrastructure.adapter.repository.TableJpaRepository;
-import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.MethodArgumentNotValidException;
 import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.NameCannotBeNullException;
 import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.ResourceNotFoundException;
 import com.softchar.restaurant_manager.infrastructure.rest.interceptor.exception.TableAlreadyBookedException;
@@ -26,19 +24,16 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
     private final BookingJpaRepository jpaBookingRepository;
     private final TableJpaRepository jpaTableRepository;
     private final BookingDboMapper bookingDboMapper;
-    private final TableDboMapper tableDboMapper;
 
     @Autowired
     public BookingJpaAdapter(
             BookingJpaRepository jpaBookingRepository,
             TableJpaRepository jpaTableRepository,
-            TableDboMapper tableDboMapper,
             BookingDboMapper bookingDboMapper
     ) {
         this.jpaBookingRepository = jpaBookingRepository;
         this.jpaTableRepository = jpaTableRepository;
         this.bookingDboMapper = bookingDboMapper;
-        this.tableDboMapper = tableDboMapper;
     }
 
     @Override
